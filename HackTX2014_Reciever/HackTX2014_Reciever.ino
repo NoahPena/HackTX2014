@@ -4,6 +4,7 @@ int receivePin = 4;
 int motor = 3;
 uint8_t lastTen[10];
 int counter = 0;
+int counterNothing = 0;
 
 void setup()
 {
@@ -21,11 +22,28 @@ void setup()
 
 void loop()
 {
+  Serial.println("*******");
+  Serial.println("");
+  Serial.print("Counter: ");
+  Serial.println(counter);
+  Serial.print("CounterNothing: ");
+  Serial.println(counterNothing);
+  Serial.println("********");
+  Serial.println("");
+  
+  
   uint8_t buf[1];
   uint8_t buflen = 1;
+  if(counter == 10)
+  {
+   counter = 0; 
+  }
   
   if(vw_get_message(buf, &buflen))
   {
+    digitalWrite(motor, LOW);
+    counterNothing = 0;
+    Serial.println(buf[0]);
     lastTen[counter] = buf[0];
     counter++;
     if(buf[0] == 0)
@@ -38,6 +56,18 @@ void loop()
      //Do Something 
     }
   } else {
+    counterNothing++;
+    Serial.println("Nothing");
     
+    if(counterNothing >= 5)
+    {
+     int amount = (lastTen[0] + lastTen[1] + lastTen[2] + lastTen[3] + lastTen[4] + lastTen[5] + lastTen[6] + lastTen[7] + lastTen[8] + lastTen[9])/2; 
+     if(amount < (255/2))
+     {
+         digitalWrite(motor, HIGH);
+     }
+    }
   }
+  
+  delay(1000);
 }

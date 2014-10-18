@@ -22,11 +22,13 @@ void loop()
   
   if(value > threshold)
   {
-     vw_send(1, 1);
+     vw_send((uint8_t*)1, 1);
      vw_wait_tx(); 
+    Serial.print("Send 1");
   } else {
-     vw_send(0, 1);
+     vw_send((uint8_t*)0, 1);
      vw_wait_tx(); 
+     Serial.print("Send 0");
   }
   
   delay(500);

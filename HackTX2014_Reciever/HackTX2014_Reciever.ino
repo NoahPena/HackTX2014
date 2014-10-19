@@ -1,7 +1,7 @@
 #include <VirtualWire.h>
 
 int receivePin = 4;
-int motor = 3;
+int motor = 9;
 uint8_t lastTen[10];
 int counter = 0;
 int counterNothing = 0;
@@ -9,6 +9,7 @@ int counterNothing = 0;
 void setup()
 {
   Serial.begin(9600);
+  Serial.println("cool");
   
   vw_set_rx_pin(receivePin);
   vw_set_ptt_inverted(true);

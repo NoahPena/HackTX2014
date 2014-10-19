@@ -1,4 +1,6 @@
-#include <VirtualWire.h>
+#include <stdio.h>
+#include <RF24.h>
+#include <SPI.h>
 
 int receivePin = 4;
 int motor = 9;
@@ -6,16 +8,27 @@ uint8_t lastTen[10];
 int counter = 0;
 int counterNothing = 0;
 
+RF24 radio(9, 10);
+
+const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
+
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("cool");
+//  Serial.println("cool");
+
+  radio.begin();
   
-  vw_set_rx_pin(receivePin);
-  vw_set_ptt_inverted(true);
-  vw_setup(2000);
+  radio.setRetries(15,15);
   
-  vw_rx_start();
+  radio.setPayloadSize(8);
+  radio.setChannel(0x4c);
+  radio.setPALevel(RF24_PA_MAX);
+  
+  radio.openWritingPipe(pipes[1]);
+  radio.openReadingPipe(1, pipes[0]);
+  
+  radio.startListening();
   
   pinMode(motor, OUTPUT);
   
@@ -40,12 +53,29 @@ void loop()
    counter = 0; 
   }
   
-  if(vw_get_message(buf, &buflen))
+  if(radio.available())
   {
     digitalWrite(motor, LOW);
     counterNothing = 0;
-    Serial.println(buf[0]);
-    lastTen[counter] = buf[0];
+    
+    bool done = false;
+    unsigned long got_time;
+    
+    while(!done)
+    {
+       done = radio.read(&got_time, sizeof(unsigned long)); 
+       
+       delay(20);
+    }
+    
+    radio.stopListening();
+    
+    radio.write(&got_time, sizeof(unsigned long));
+    
+    radio.startListening();
+    
+    Serial.println(got_time);
+    lastTen[counter] = got_time;
     counter++;
     if(buf[0] == 0)
     {

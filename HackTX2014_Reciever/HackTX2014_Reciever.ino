@@ -248,7 +248,7 @@ void loop(){
                               {
                                  int amount = (lastTen[0] + lastTen[1] + lastTen[2] + lastTen[3] + lastTen[4] + lastTen[5] + lastTen[6] + lastTen[7] + lastTen[8] + lastTen[9])/2; 
                                      Serial.println(amount);
-                                     if(amount > (255/2))
+                                     if(amount > (400))
                                      {
                                          digitalWrite(motor, HIGH);
                                      }

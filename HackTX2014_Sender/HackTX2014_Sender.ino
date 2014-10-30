@@ -33,7 +33,8 @@
 // CE Pin, CSN Pin, SPI Speed
 //RF24 radio(11, 12);  //teensy 2.0++
 //RF24 radio(9, 10);  //teensy 3,0
-RF24 radio(48,49);  //arduino Mega
+//RF24 radio(48, 49);
+RF24 radio(8,53);  //arduino Mega
 
 int fsrPin = A0;
 int value = 0;
